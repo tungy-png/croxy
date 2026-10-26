@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090b12">
+    <title>RALLY//ROGUE — Neon Pong Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Rally Rogue home">
+          <span class="brand-mark" aria-hidden="true">R<span>//</span>R</span>
+          <span class="brand-name">RALLY<span>//</span>ROGUE</span>
+        </a>
+        <div class="topbar-tag"><span class="live-dot"></span> THE ARENA IS LIVE</div>
+        <button class="sound-button" id="sound-button" type="button" aria-label="Toggle sound" title="Toggle sound">
+          <span id="sound-icon" aria-hidden="true">♫</span>
+          <span id="sound-label">SOUND ON</span>
+        </button>
+      </header>
+
+      <section class="arena-layout" aria-label="Rally Rogue game">
+        <aside class="side-column player-column">
+          <div class="fighter-card player-card">
+            <div class="fighter-topline"><span class="eyebrow">YOUR RUN</span><span class="fighter-index">01 / PLAYER</span></div>
+            <div class="fighter-name">ROGUE<span class="fighter-symbol">✳</span></div>
+            <div class="health-heading"><span>HULL INTEGRITY</span><span id="player-health-label">3 / 3</span></div>
+            <div class="health-track" id="player-health" aria-label="Player health"></div>
+            <div class="fighter-rule"></div>
+            <div class="mini-stat"><span>LEVEL</span><strong id="level-stat">01</strong></div>
+            <div class="mini-stat"><span>BEST STREAK</span><strong id="streak-stat">0 <small>W</small></strong></div>
+            <div class="mini-stat"><span>UPGRADES</span><strong id="upgrade-stat">00</strong></div>
+          </div>
+          <div class="upgrade-summary">
+            <div class="section-kicker"><span class="kicker-line"></span> BUILD</div>
+            <div class="build-empty" id="build-summary">Pick your first upgrade<br>after the opening round.</div>
+          </div>
+          <div class="side-tip"><span class="tip-icon">↗</span><span>Land five returns.<br>Press E for RIFT BREAK.</span></div>
+        </aside>
+
+        <section class="play-column" aria-label="Game arena">
+          <div class="arena-heading">
+            <div class="level-heading"><span class="eyebrow" id="round-label">ROUND 01</span><h1 id="opponent-name">THE WARMUP</h1></div>
+            <div class="boss-pill" id="boss-pill" hidden><span>◆</span> BOSS ENCOUNTER</div>
+            <div class="round-count"><span>WINS</span><strong id="wins-count">0</strong></div>
+          </div>
+          <div class="canvas-frame">
+            <canvas id="game-canvas" width="960" height="560" aria-label="Pong game arena. Use W and S or the up and down arrow keys to move your paddle. With Quick Hands, double-tap a direction to flash-step. Make five returns and press E to use Rift Break."></canvas>
+            <div class="arena-event-banner" id="arena-event-banner" role="status" aria-live="polite" hidden>
+              <strong id="arena-event-title"></strong><span id="arena-event-copy"></span>
+            </div>
+            <div class="game-overlay" id="game-overlay">
+              <div class="overlay-content">
+                <div class="overlay-eyebrow" id="overlay-eyebrow"><span class="live-dot"></span> A DIFFERENT KIND OF PONG</div>
+                <h2 id="overlay-title">ONE MORE<br><span>RALLY.</span></h2>
+                <p id="overlay-copy">Outlast the arena. Level up between rounds.<br>Challenge the Circuit's champions.</p>
+                <button class="primary-button" id="main-button" type="button">START YOUR RUN <span>↗</span></button>
+                <button class="secondary-button" id="level-select-button" type="button">LEVEL SELECT</button>
+                <div class="controls-hint" id="controls-hint"><kbd>W</kbd><kbd>S</kbd><span>MOVE</span><i></i><span>OR USE</span><kbd>↑</kbd><kbd>↓</kbd></div>
+              </div>
+            </div>
+            <section class="story-overlay" id="story-overlay" role="dialog" aria-modal="true" aria-labelledby="story-title" hidden>
+              <div class="story-panel">
+                <div class="story-topline"><span id="story-chapter">THE NEON CIRCUIT</span><span id="story-phase">PRE-MATCH TRANSMISSION</span></div>
+                <div class="story-speaker"><span class="story-portrait" id="story-portrait">R</span><div><span class="eyebrow">INCOMING TRANSMISSION</span><h2 id="story-title">ROGUE</h2></div></div>
+                <p class="story-line" id="story-line"></p>
+                <div class="story-bottom"><span id="story-subtitle">THE CIRCUIT DOESN'T FORGIVE.</span><button class="story-continue" id="story-continue" type="button">CONTINUE <span>↗</span></button></div>
+              </div>
+            </section>
+            <div class="pause-indicator" id="pause-indicator" hidden>PAUSED <span>· PRESS SPACE TO RESUME</span></div>
+            <div class="canvas-corner corner-tl"></div><div class="canvas-corner corner-tr"></div>
+            <div class="canvas-corner corner-bl"></div><div class="canvas-corner corner-br"></div>
+          </div>
+          <div class="arena-footer">
+            <div class="enemy-health"><span>OPPONENT</span><div class="health-track enemy-track" id="enemy-health" aria-label="Opponent health"></div><strong id="enemy-health-label">2 / 2</strong></div>
+            <div class="rift-meter" aria-label="Rift Break charge">
+              <span>RIFT</span>
+              <div class="rift-cells" id="rift-cells" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+              <kbd>E</kbd>
+            </div>
+            <div class="arena-status" id="arena-status"><span class="status-dot"></span> READY WHEN YOU ARE</div>
+            <button class="pause-button" id="pause-button" type="button" aria-label="Pause game" title="Pause (Space)">Ⅱ</button>
+          </div>
+        </section>
+
+        <aside class="side-column opponent-column">
+          <div class="fighter-card opponent-card">
+            <div class="fighter-topline"><span class="eyebrow">NEXT UP</span><span class="fighter-index">AI / <span id="ai-rank">01</span></span></div>
+            <div class="fighter-name" id="opponent-card-name">BOT ZERO<span class="fighter-symbol opponent-symbol">◇</span></div>
+            <p class="opponent-description" id="opponent-description">A training bot with<br>big ambitions.</p>
+            <div class="fighter-rule"></div>
+            <div class="mini-stat"><span>THREAT</span><strong id="threat-stat">LOW</strong></div>
+            <div class="mini-stat"><span>STYLE</span><strong id="style-stat">STANDARD</strong></div>
+            <div class="mini-stat"><span>ROUND</span><strong id="opponent-round">01</strong></div>
+          </div>
+          <div class="boss-preview" id="boss-preview">
+            <div class="boss-preview-icon">◆</div>
+            <div><span class="eyebrow">THE BIG ONE</span><p id="boss-preview-copy">A boss waits at every<br>5th level.</p></div>
+          </div>
+          <div class="how-to-win"><div class="section-kicker"><span class="kicker-line"></span> THE DEAL</div><p>Make them miss.<br>Don't miss yourself.</p></div>
+        </aside>
+      </section>
+
+      <footer class="page-footer">
+        <span>NO COIN REQUIRED. JUST REFLEXES.</span>
+        <span>BUILT FOR THE LONG GAME <span class="footer-star">✳</span></span>
+      </footer>
+    </main>
+
+    <div class="modal-backdrop" id="level-select-modal" hidden>
+      <section class="level-select-modal" role="dialog" aria-modal="true" aria-labelledby="level-select-title">
+        <div class="modal-topline"><span class="eyebrow"><span class="live-dot"></span> UNLOCKED CHALLENGERS</span><span class="modal-level" id="level-select-progress">LEVEL 01 AVAILABLE</span></div>
+        <h2 id="level-select-title">CHOOSE YOUR<br><span>OPPONENT.</span></h2>
+        <p class="modal-copy">Rematch a rival you have beaten, or face your current challenger.</p>
+        <div class="level-select-list" id="level-select-list"></div>
+        <button class="level-select-close" id="level-select-close" type="button">BACK TO MENU</button>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="upgrade-modal" hidden>
+      <section class="upgrade-modal" role="dialog" aria-modal="true" aria-labelledby="upgrade-title">
+        <div class="modal-topline" id="modal-topline"><span class="eyebrow"><span class="live-dot"></span> ROUND CLEARED</span><span class="modal-level" id="cleared-level">LEVEL 01</span></div>
+        <h2 id="upgrade-title">PICK YOUR<br><span>EDGE.</span></h2>
+        <p class="modal-copy" id="modal-copy">One upgrade. One step closer to the top.</p>
+        <div class="upgrade-cards" id="upgrade-cards"></div>
+        <div class="modal-bottom" id="modal-bottom"><span>YOUR BUILD, YOUR RULES.</span><span>CHOOSE ONE TO CONTINUE ↗</span></div>
+      </section>
+    </div>
+  </body>
+</html>
